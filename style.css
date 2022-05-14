@@ -1,0 +1,29 @@
+.square {
+    border: solid 1px red;
+    width: 100px;
+    height: 100px;
+}
+
+.red-square {
+    border: solid 1px red;
+    width: 100px;
+    height: 100px;
+}
+
+.green-square {
+    border: solid 1px greenyellow;
+    width: 100px;
+    height: 100px;
+}
+
+.hidden {
+    display: none;
+}
+
+.flex {
+    display: flex;
+}
+
+.table {
+    border: 1px solid black;
+}
