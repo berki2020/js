@@ -1,10 +1,8 @@
-export class CreateTable {
+export class Table {
     #config;
     #defaultConfig;
-    #tableElement;
-    #rowElement;
-    #cellElement;
     #table;
+    #coordinateGrid;
 
     constructor(config) {
         this.#defaultConfig = {
@@ -37,56 +35,63 @@ export class CreateTable {
         this.#init();
     }
 
+    get coordinateGrid() {
+        return {coordinateGrid: this.#coordinateGrid};
+    }
+
     #init() {
-        this.#createTableParts();
+        this.#generateCoordinateGrid();
         this.#buildTable();
+        this.#renderTable();
+    }
+
+    #renderTable() {
+        document.body.appendChild(this.#table);
     }
 
     #buildTable() {
-        this.#table = this.#tableElement;
+        this.#table = this.#createTableTag();
 
-        let count = 0;
-        for (let row = 0; row < this.#config.table.dimensions.y; row++) {
-            count++;
-            let currentRow = Object.assign(this.#rowElement, {id: 'row-' + row});
-            for (let cell = 0; cell < this.#config.table.dimensions.y; cell++) {
-
-                let currentCell = Object.assign(this.#cellElement, {id: 'row-' + row + '-cell-' + cell});
+        for (let row in this.#coordinateGrid) {
+            let currentRow = Object.assign(this.#createRowTag(), {id: row});
+            for (let cell of this.#coordinateGrid[row]) {
+                let currentCell = Object.assign(this.#createCellTag(), {id: cell});
                 currentRow.appendChild(currentCell);
             }
             this.#table.appendChild(currentRow);
-            console.log(this.#table);
-            if (count === 4) break;
         }
-
-        // console.log(this.#table);
-        // console.log(this.#rowElement);
-        // console.log(this.#cellElement);
-
     }
 
-    #createTableParts() {
-        this.#createTableTag();
-        this.#createRowTag();
-        this.#createCellTag();
+    #generateCoordinateGrid() {
+        this.#coordinateGrid = {};
+
+        for (let row = 0; row < this.#config.table.dimensions.y; row++) {
+            let currentRow = 'row-' + row;
+            let cells = [];
+            for (let cell = 0; cell < this.#config.table.dimensions.y; cell++) {
+                let currentCell = '-cell-' + cell;
+                cells[cell] = currentRow + currentCell;
+            }
+            this.#coordinateGrid[currentRow] = cells;
+        }
     }
 
     #createTableTag() {
-        this.#tableElement = Object.assign(
+        return Object.assign(
             document.createElement(this.#config.table.tag),
             this.#config.table.options
         );
     }
 
     #createRowTag() {
-        this.#rowElement = Object.assign(
+        return Object.assign(
             document.createElement(this.#config.row.tag),
             this.#config.row.options
         );
     }
 
     #createCellTag() {
-        this.#cellElement = Object.assign(
+        return Object.assign(
             document.createElement(this.#config.cell.tag),
             this.#config.cell.options
         );
